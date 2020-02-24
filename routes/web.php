@@ -31,6 +31,10 @@ Route::post('/set-manager-email', 'UserController@setManagerEmail')
   ->middleware('auth')
   ->name('set-manager-email');
 
+Route::post('/remove-all-requests', 'UserController@removeAllRequests')
+    ->middleware('auth')
+    ->name('remove-all-requests');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

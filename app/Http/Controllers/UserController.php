@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+use FilesystemIterator;
 use Validator;
 
 use Carbon\Carbon;
@@ -111,7 +112,10 @@ class UserController extends Controller
                         $sp = storage_path("app/public/download/$parent_dir/");
                         mkdir($sp);
                         $attachment_path = $sp.$requestRaw->attachment_name;
-                        symlink(storage_path("app/requests/$file"), $attachment_path);
+                        symlink(
+                            storage_path("app/requests/$file"),
+                            $attachment_path
+                        );
                         break;
                     }
                 }
@@ -153,6 +157,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function removeAllRequests()
+    {
+        DB::table('requests')->truncate();
+        $this->delete_dir_recursively(
+            public_path('storage/download/'),
+            false
+        );
+        $this->delete_dir_recursively(storage_path('app/requests/'), false);
+        return $this->notify_and_redirect_view(
+            'All requests have been removed.'
+        );
+    }
+
     public function setManagerEmail(Request $req)
     {
         if ($req->email && filter_var($req->email, FILTER_VALIDATE_EMAIL)) {
@@ -163,7 +180,6 @@ class UserController extends Controller
                     'Configuration file is corrupted.'
                 );
             }
-
             $json->email = $req->email;
             $json_str = json_encode($json);
             $h = fopen($config_path, 'w');
@@ -187,6 +203,21 @@ class UserController extends Controller
             );
         }
         return $json->email;
+    }
+
+    private function delete_dir_recursively($dir, $remove_itself = true)
+    {
+        foreach ((new FilesystemIterator($dir)) as $f) {
+            $pathname = $f->getPathname();
+            if (is_dir($pathname)) {
+                $this->delete_dir_recursively($pathname);
+            } else {
+                unlink($pathname);
+            }
+        }
+        if ($remove_itself) {
+            rmdir($dir);
+        }
     }
 
     private function notify_and_redirect_view(string $message)

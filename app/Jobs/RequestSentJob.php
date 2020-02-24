@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace App\Jobs;
 
@@ -67,7 +68,9 @@ class RequestSentJob implements ShouldQueue
         ob_end_clean();
 
         $message = (new Swift_Message('Notification to manager'))
-            ->setFrom([config('mail.tz_mail_username') => config('mail.tz_mail_from')])
+            ->setFrom([
+                config('mail.tz_mail_username') => config('mail.tz_mail_from')
+            ])
             ->setTo([UserController::getManagerEmail() => 'Manager'])
             ->setBody($body, 'text/plain');
 

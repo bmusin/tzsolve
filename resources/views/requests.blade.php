@@ -45,4 +45,9 @@
     <input type="email" name="email">
     <input type="submit" value="Set e-mail">
   </form>
+  <hr>
+  <form action="<?= route('remove-all-requests') ?>" method="post">
+      <?= csrf_field() ?>
+      <input type="submit" value="Remove all requests">
+  </form>
 @endsection
