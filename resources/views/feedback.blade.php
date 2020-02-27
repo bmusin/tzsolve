@@ -2,7 +2,7 @@
 
 @section('title', 'Feedback')
 @section('content')
-<form class='centered' action="<?= url('feedback/process') ?>" enctype="multipart/form-data" method="post">
+<form class='centered' action="<?= route('feedbacks.store') ?>" enctype="multipart/form-data" method="post">
   <?= csrf_field() ?>
   <table>
     <tbody>

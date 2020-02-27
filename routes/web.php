@@ -11,30 +11,30 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'HomeController@root')->name('root');
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes(['verify' => 'false', 'reset' => 'false']);
+
+Route::post('login', 'Auth\LoginController@userLogin');
+Route::post('register', 'Auth\RegisterController@createClient');
+
+Route::prefix('feedbacks')->group(function () {
+    Route::get('create', 'FeedbackController@create')
+        ->name('feedbacks.create');
+
+    Route::post('', 'FeedbackController@store')
+        ->name('feedbacks.store');
 });
 
-Auth::routes();
+Route::prefix('requests')->group(function () {
+    Route::get('', 'RequestController@index')
+      ->name('requests.index');
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/feedback', 'UserController@showFeedbackForm')
+    Route::delete('', 'RequestController@removeAll')
+      ->name('requests.truncate');
+});
+
+Route::put('/manager/email', 'ManagerController@updateManagerEmail')
   ->middleware('auth')
-  ->name('feedback-form');
-
-Route::post('/feedback/process', 'UserController@processFeedbackForm');
-Route::get('/requests', 'UserController@requests')
-  ->middleware('auth')
-  ->name('requests');
-
-Route::post('/set-manager-email', 'UserController@setManagerEmail')
-  ->middleware('auth')
-  ->name('set-manager-email');
-
-Route::post('/remove-all-requests', 'UserController@removeAllRequests')
-    ->middleware('auth')
-    ->name('remove-all-requests');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+  ->name('manager-email.update');
