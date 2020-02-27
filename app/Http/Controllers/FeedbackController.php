@@ -25,11 +25,7 @@ class FeedbackController extends Controller
         if (LC::logged_in_as_manager()) {
             return Util::RELOGIN_AS_CLIENT__REDIRECT();
         } elseif (LC::logged_in_as_client()) {
-            if ($this->is_too_frequent()) {
-                return Util::TOO_OFTEN__REDIRECT();
-            } else {
-                return $this->feedbackView();
-            }
+            return $this->feedbackView();
         } else {
             return LC::REDIRECT_BACK_TO_LOGIN();
         }

@@ -17,6 +17,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes(['verify' => 'false', 'reset' => 'false']);
 
 Route::post('login', 'Auth\LoginController@userLogin');
+Route::get('logout', 'Auth\LoginController@logout');
 Route::post('register', 'Auth\RegisterController@createClient');
 
 Route::prefix('feedbacks')->group(function () {

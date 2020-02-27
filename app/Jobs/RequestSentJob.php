@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Mail;
 use App\Client;
 use App\Mail\RequestSentMail;
 use App\Request as ClientRequest;
-use App\Util;
 
 class RequestSentJob implements ShouldQueue
 {
@@ -44,7 +43,7 @@ class RequestSentJob implements ShouldQueue
         $request        = ClientRequest::find($this->newRequestId);
         $client         = $request->client;
 
-        Mail::to(new class('Manager', Util::getManagerEmail()) {
+        Mail::to(new class('Manager', User::getManagerEmail()) {
             public $name;
             public $email;
 
